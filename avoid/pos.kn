@@ -7,10 +7,10 @@
 	+var ay: float
 	
 	+func Move()
-		do me.x :: me.x + me.vx
-		do me.y :: me.y + me.vy
-		do me.vx :: me.vx + me.ax
-		do me.vy :: me.vy + me.ay
+		do me.x :+ me.vx
+		do me.y :+ me.vy
+		do me.vx :+ me.ax
+		do me.vy :+ me.ay
 	end func
 	
 	+func Stop()

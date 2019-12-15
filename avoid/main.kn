@@ -11,7 +11,7 @@ var point: int :: 0
 const charaRadius: float :: 50.0
 const wndWidth: int :: 1600
 const wndHeight: int :: 900
-const bottomPos: float :: 750.0
+const ground: float :: 750.0
 
 func main()
 	do @init()
@@ -33,11 +33,11 @@ end func
 func loadGame()
 	do @player :: #\pos@Pos
 	do @player.x :: 200.0
-	do @player.y :: 750.0
+	do @player.y :: @ground
 	
 	do @enemy :: #\pos@Pos
 	do @enemy.x :: 800.0
-	do @enemy.y :: 750.0
+	do @enemy.y :: @ground
 	do @enemy.vx :: -3.0
 	do @enemy.ax :: -0.01
 	
@@ -59,9 +59,9 @@ func evil()
 	do @enemy.Move()
 	
 	; 止まる＋y座標調整
-	if(@player.y >= @bottomPos)
+	if(@player.y >= @ground)
 		do @player.Stop()
-		do @player.y :: @bottomPos
+		do @player.y :: @ground
 	end if
 	
 	; 接触したらゲームオーバー
@@ -90,12 +90,12 @@ func evilKey()
 		end if
 		if(input@key(%left))
 			if(@player.x > @charaRadius)
-				do @player.x :: @player.x - 5.0
+				do @player.x :- 5.0
 			end if
 		end if
 		if(input@key(%right))
 			if(@player.x < @wndWidth $ float - @charaRadius)
-				do @player.x :: @player.x + 5.0
+				do @player.x :+ 5.0
 			end if
 		end if
 	end if

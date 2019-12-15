@@ -1,0 +1,121 @@
+var wndMain: wnd@Wnd
+var drawMain: wnd@Draw
+
+var player: \pos@Pos
+var enemy: \pos@Pos
+
+var gameOver: bool :: false
+var startTime: int :: 0
+var point: int :: 0
+
+const charaRadius: float :: 50.0
+const wndWidth: int :: 1600
+const wndHeight: int :: 900
+const bottomPos: float :: 750.0
+
+func main()
+	do @init()
+	
+	while(wnd@act())
+		do @evil()
+		do @render()
+		do draw@render(60)
+	end while
+end func
+
+func init()
+	do @wndMain :: wnd@makeWnd(null, %aspect, @wndWidth, @wndHeight, "Main Window")
+	do @drawMain :: wnd@makeDraw(@wndMain, 0, 0, @wndWidth, @wndHeight, %scale, %scale, false)
+	
+	do @loadGame()
+end func
+
+func loadGame()
+	do @player :: #\pos@Pos
+	do @player.x :: 200.0
+	do @player.y :: 750.0
+	
+	do @enemy :: #\pos@Pos
+	do @enemy.x :: 800.0
+	do @enemy.y :: 750.0
+	do @enemy.vx :: -3.0
+	do @enemy.ax :: -0.01
+	
+	do @gameOver :: false
+	
+	do @startTime :: lib@sysTime()
+	do @point :: 0
+end func
+
+func evil()
+	do @evilKey()
+	; 反射
+	if(@enemy.x <= @charaRadius | @enemy.x >= @wndWidth $ float - @charaRadius)
+		do @enemy.vx :: -@enemy.vx
+		do @enemy.ax :: -@enemy.ax
+	end if
+	
+	do @player.Move()
+	do @enemy.Move()
+	
+	; 止まる＋y座標調整
+	if(@player.y >= @bottomPos)
+		do @player.Stop()
+		do @player.y :: @bottomPos
+	end if
+	
+	; 接触したらゲームオーバー
+	if(lib@dist(@player.x, @player.y, @enemy.x, @enemy.y) < @charaRadius * 2.0)
+		do @gameOver :: true
+		do @player.Stop()
+		do @enemy.Stop()
+	end if
+	
+	if(!@gameOver)
+		do @point :: @evilPoint()
+	end if
+end func
+
+func evilKey()
+	if(@gameOver)
+		if(input@key(%space) | input@key(%enter))
+			do @loadGame()
+		end if
+	else
+		if(input@key(%space) | input@key(%up))
+			if(!@player.IsMove())
+				do @player.vy :: -20.0
+				do @player.ay :: 0.7
+			end if
+		end if
+		if(input@key(%left))
+			if(@player.x > @charaRadius)
+				do @player.x :: @player.x - 5.0
+			end if
+		end if
+		if(input@key(%right))
+			if(@player.x < @wndWidth $ float - @charaRadius)
+				do @player.x :: @player.x + 5.0
+			end if
+		end if
+	end if
+end func
+
+func evilPoint(): int
+	ret(lib@sysTime() - @startTime) / 10
+end func
+
+func render()
+	if(@gameOver)
+		const text: []char :: "GAME OVER!"
+		var font: draw@Font :: draw@makeFont(null, 70, false, false, true, 0.0)
+		var width: float :: font.calcWidth(text)
+		do font.draw((@wndWidth $ float - width) / 2.0, @wndHeight $ float / 3.0, text, 0xFFFFFFFF)
+	end if
+	
+	var font: draw@Font :: draw@makeFont(null, 30, false, false, true, 0.0)
+	do font.draw(10.0, 10.0, "Point: \{@point}", 0xFFFFFFFF)
+	
+	do draw@circle(@player.x, @player.y, @charaRadius, @charaRadius, 0xFFFF0000)
+	do draw@circle(@enemy.x, @enemy.y, @charaRadius, @charaRadius, 0xFFFFFF00)
+end func

@@ -1,0 +1,26 @@
++class Pos()
+	+var x: float
+	+var y: float
+	+var vx: float
+	+var vy: float
+	+var ax: float
+	+var ay: float
+	
+	+func Move()
+		do me.x :: me.x + me.vx
+		do me.y :: me.y + me.vy
+		do me.vx :: me.vx + me.ax
+		do me.vy :: me.vy + me.ay
+	end func
+	
+	+func Stop()
+		do me.vx :: 0.0
+		do me.vy :: 0.0
+		do me.ax :: 0.0
+		do me.ay :: 0.0
+	end func
+	
+	+func IsMove(): bool
+		ret me.vx <> 0.0 | me.vy <> 0.0 | me.ax <> 0.0 | me.ay <> 0.0
+	end func
+end class

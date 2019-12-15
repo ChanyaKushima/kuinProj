@@ -1,5 +1,9 @@
 # kuinProj
 This repository is my stack of kuin projects
+## What is Kuin
+Kuin is a programing language made by Kuina-chan.  
+[Go to Kuina-chan's homepage.](http://kuina.ch/)  
+[More information about Kuin.](http://kuina.ch/kuin)  
 
 ---
 # avoid

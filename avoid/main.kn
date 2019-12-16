@@ -17,7 +17,7 @@ func main()
 	do @init()
 	
 	while(wnd@act())
-		do @evil()
+		do @eval()
 		do @render()
 		do draw@render(60)
 	end while
@@ -47,8 +47,8 @@ func loadGame()
 	do @point :: 0
 end func
 
-func evil()
-	do @evilKey()
+func eval()
+	do @evalKey()
 	; 反射
 	if(@enemy.x <= @charaRadius | @enemy.x >= @wndWidth $ float - @charaRadius)
 		do @enemy.vx :: -@enemy.vx
@@ -72,11 +72,11 @@ func evil()
 	end if
 	
 	if(!@gameOver)
-		do @point :: @evilPoint()
+		do @point :: @evalPoint()
 	end if
 end func
 
-func evilKey()
+func evalKey()
 	if(@gameOver)
 		if(input@key(%space) | input@key(%enter))
 			do @loadGame()
@@ -101,7 +101,7 @@ func evilKey()
 	end if
 end func
 
-func evilPoint(): int
+func evalPoint(): int
 	ret(lib@sysTime() - @startTime) / 10
 end func
 
